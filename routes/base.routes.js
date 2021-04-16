@@ -47,4 +47,26 @@ router.post('/sign-up', (req, res)=>{
 
 })
 
+router.get('/login', (req, res) => res.render('pages/login-form'))
+
+router.post('/login', (req, res) => {
+
+    const { username, pwd } = req.body
+
+    User
+        .findOne({ username })
+        .then(user => {
+
+            if (!user) {
+                res.render('pages/login-form', { errorMessage: 'Usuario no reconocido' })
+                return
+            }
+            if (bcrypt.compareSync(pwd, user.password) === false) {
+                res.render('pages/login-form', { errorMessage: 'Contraseña incorrecta' })
+                return
+            }
+            console.log('tengo aqui el usuario', user)
+            res.redirect('/')
+        })
+    })
 module.exports = router
