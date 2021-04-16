@@ -66,7 +66,28 @@ router.post('/login', (req, res) => {
                 return
             }
             console.log('tengo aqui el usuario', user)
+            req.session.currentUser = user
+            console.log(req.session)
             res.redirect('/')
         })
     })
+    
+
+
+router.use((req, res, next) => {
+    console.log(req.session)    
+    return req.session.currentUser ? next() : res.redirect('/login')
+})
+
+router.get('/private', (req, res) => {
+    res.render('pages/private-section', req.session.currentUser)
+})
+
+router.get('/main', (req, res) => {
+    res.render('pages/main-section', req.session.currentUser)
+})
+
+
+
+
 module.exports = router
